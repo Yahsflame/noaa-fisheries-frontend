@@ -24,12 +24,10 @@
   transform-origin: center;
 }
 
-/* Animation for theme switching */
 .theme-toggle:active .theme-icon {
   transform: rotate(180deg) scale(0.8);
 }
 
-/* Dark mode specific styles */
 [data-theme="dark"] .theme-toggle:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
@@ -38,7 +36,6 @@
   outline-color: var(--color-primary-light);
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
   .theme-toggle {
     width: 36px;
@@ -51,7 +48,6 @@
   }
 }
 
-/* Smooth icon transition */
 .theme-icon {
   animation: iconFadeIn 0.3s ease-in-out;
 }
@@ -67,7 +63,6 @@
   }
 }
 
-/* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle,
   .theme-icon {

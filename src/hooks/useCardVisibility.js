@@ -1,9 +1,5 @@
 import { createSignal, createEffect, onCleanup } from "solid-js";
 
-/**
- * Enhanced visibility hook specifically for card-based prefetching
- * Tracks when cards come into view and manages prefetching state
- */
 export function useCardVisibility(threshold = 100) {
   const [isVisible, setIsVisible] = createSignal(false);
   const [element, setElement] = createSignal(null);
@@ -15,12 +11,10 @@ export function useCardVisibility(threshold = 100) {
   createEffect(() => {
     const currentElement = element();
 
-    // Don't create observer if already visible or no element or no window
     if (hasBeenVisible || !currentElement || typeof window === "undefined") {
       return;
     }
 
-    // Clean up existing observer before creating new one
     if (observer) {
       observer.disconnect();
     }
@@ -31,9 +25,6 @@ export function useCardVisibility(threshold = 100) {
           if (entry.isIntersecting && !hasBeenVisible) {
             hasBeenVisible = true;
             setIsVisible(true);
-
-            // Don't disconnect immediately - let the component handle prefetching
-            // The component will call markAsPrefetched() when done
           }
         });
       },
@@ -55,7 +46,6 @@ export function useCardVisibility(threshold = 100) {
 
   const markAsPrefetched = () => {
     setHasPrefetched(true);
-    // Clean up observer after prefetching is complete
     if (observer) {
       observer.disconnect();
       observer = null;

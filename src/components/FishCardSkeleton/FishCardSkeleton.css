@@ -112,7 +112,6 @@
     }
 }
 
-/* Mobile Styles */
 @media (max-width: 768px) {
     .skeleton-image {
         height: 150px;

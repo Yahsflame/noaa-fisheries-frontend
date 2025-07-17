@@ -6,7 +6,6 @@ export default function FishDescription(props) {
   const { Calories, FatTotal, Protein, Biology } = props.fish;
   const { fishId } = props;
 
-  // Create description from available fields
   const getDescription = () => {
     const descriptions = [];
 

@@ -59,7 +59,6 @@
     font-size: 0.9rem;
 }
 
-/* Mobile Menu Button */
 .mobile-menu-btn {
     display: none;
     background: none;
@@ -87,7 +86,6 @@
     transform: rotate(180deg);
 }
 
-/* Mobile Navigation */
 .mobile-nav {
     position: fixed;
     top: 0;
@@ -130,7 +128,6 @@
     border-bottom: none;
 }
 
-/* Mobile Overlay */
 .mobile-nav-overlay {
     position: fixed;
     top: 0;
@@ -141,14 +138,12 @@
     z-index: 98;
 }
 
-/* Desktop Navigation */
 .desktop-nav {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
 }
 
-/* Navigation Controls */
 .nav-controls {
     display: flex;
     align-items: center;
@@ -165,7 +160,6 @@
     justify-content: center;
 }
 
-/* Responsive Design - 991px and below */
 @media (max-width: 991px) {
     .nav-container {
         padding: 0 var(--spacing-md);

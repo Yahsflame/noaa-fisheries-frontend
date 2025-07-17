@@ -10,12 +10,10 @@ export function useLazyLoad(threshold = 100) {
   createEffect(() => {
     const currentElement = element();
 
-    // Don't create observer if already visible or no element or no window
     if (hasBeenVisible || !currentElement || typeof window === "undefined") {
       return;
     }
 
-    // Clean up existing observer before creating new one
     if (observer) {
       observer.disconnect();
     }
@@ -26,7 +24,6 @@ export function useLazyLoad(threshold = 100) {
           if (entry.isIntersecting && !hasBeenVisible) {
             hasBeenVisible = true;
             setIsVisible(true);
-            // Clean up observer immediately after becoming visible
             observer.disconnect();
             observer = null;
           }

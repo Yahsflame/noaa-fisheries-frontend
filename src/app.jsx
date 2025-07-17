@@ -15,7 +15,6 @@ export default function App() {
           <MetaProvider>
             <Title>NOAA Fisheries Regions</Title>
             <div class="app">
-              {/* Skip links for accessibility */}
               <a href="#main-content" class="skip-link">
                 Skip to main content
               </a>

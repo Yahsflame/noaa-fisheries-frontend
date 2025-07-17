@@ -16,8 +16,6 @@ import "./region.css";
 
 export default function RegionPage() {
   const params = useParams();
-
-  // Server-side data fetching with createAsync
   const regionData = createAsync(() => getRegionData(params.regionId));
   const fish = createAsync(() => getFishByRegion(params.regionId));
 
@@ -27,20 +25,16 @@ export default function RegionPage() {
   const [loadingMore, setLoadingMore] = createSignal(false);
   let fishGridRef;
 
-  // Client-side prefetching after component mounts
   onMount(() => {
     const fishData = fish();
     if (fishData && fishData.length > 0) {
-      // Import the prefetch utility
       import("~/utils/imagePrefetch").then(({ prefetchRegionImages }) => {
-        // Enable debug mode in development
         const debugMode = import.meta.env.DEV;
         prefetchRegionImages(fishData, debugMode);
       });
     }
   });
 
-  // Create computed values for lazy loading
   const visibleFish = createMemo(() => {
     const fishData = fish();
     return fishData ? fishData.slice(0, visibleCount()) : [];
@@ -64,7 +58,6 @@ export default function RegionPage() {
     }, 300);
   };
 
-  // Setup scroll listener after mount
   onMount(() => {
     const handleScroll = () => {
       if (!hasMore() || loadingMore()) return;

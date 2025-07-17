@@ -6,14 +6,11 @@ export default function ImageSlider(props) {
   const [currentIndex, setCurrentIndex] = createSignal(0);
   const [isImageLoading, setIsImageLoading] = createSignal(false);
 
-  // If no images or only one image, don't show slider controls
   const hasMultipleImages = () => images && images.length > 1;
 
-  // Client-side only preloading to avoid SSR issues
   onMount(() => {
     if (!images || images.length <= 1) return;
 
-    // Preload next few images for better UX
     [1, 2].forEach((index) => {
       if (index < images.length) {
         const img = new Image();

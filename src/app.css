@@ -1,13 +1,9 @@
 :root {
-  /* Light theme colors */
   --color-primary: #1976d2;
   --color-primary-dark: #1565c0;
   --color-primary-light: #bbdefb;
   --color-error: #d32f2f;
-  --color-success: #388e3c;
-  --color-warning: #f57c00;
 
-  /* Grays */
   --color-text: #333;
   --color-text-secondary: #666;
   --color-text-muted: #999;
@@ -19,7 +15,6 @@
   --color-error-background: #ffebee;
   --color-placeholder: #f0f0f0;
 
-  /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -27,23 +22,19 @@
   --spacing-xl: 2rem;
   --spacing-xxl: 3rem;
 
-  /* Borders */
   --border-radius: 8px;
   --border-radius-sm: 4px;
   --border-radius-lg: 12px;
 
-  /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
 
-  /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 }
 
-/* Dark theme */
 [data-theme="dark"] {
   --color-text: #e0e0e0;
   --color-text-secondary: #b0b0b0;
@@ -60,9 +51,6 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* Utility Classes */
-
-/* Button utilities */
 .btn {
   border: none;
   border-radius: var(--border-radius-sm);
@@ -113,7 +101,6 @@
   outline-offset: 2px;
 }
 
-/* Layout utilities */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -122,18 +109,6 @@
 
 .flex {
   display: flex;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
 }
 
 .justify-between {
@@ -152,13 +127,8 @@
   gap: var(--spacing-lg);
 }
 
-/* Text utilities */
 .text-center {
   text-align: center;
-}
-
-.text-primary {
-  color: var(--color-primary);
 }
 
 .text-secondary {
@@ -169,48 +139,37 @@
   color: var(--color-text-muted);
 }
 
-
-
-/* Performance optimizations */
-
-/* CSS Containment for better performance */
 .region-page {
   contain: layout style paint;
 }
 
-/* Optimize animations with GPU acceleration */
 .btn,
 .theme-toggle {
   will-change: auto;
   transform: translateZ(0);
 }
 
-/* Only enable will-change during animations */
 .btn:hover,
 .theme-toggle:hover {
   will-change: transform, box-shadow;
 }
 
-/* Remove will-change after animation */
 .btn:not(:hover),
 .theme-toggle:not(:hover) {
   will-change: auto;
 }
 
-/* Optimize font rendering */
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Optimize images */
 img {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: optimize-contrast;
 }
 
-/* Reduce layout thrashing */
 .loading,
 .skeleton-title,
 .skeleton-stat-label,
@@ -221,7 +180,6 @@ img {
   contain-intrinsic-size: 1px 40px;
 }
 
-/* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -232,7 +190,6 @@ img {
     scroll-behavior: auto !important;
   }
 
-  /* Disable will-change for reduced motion */
   .btn,
   .theme-toggle {
     will-change: auto !important;
@@ -246,7 +203,6 @@ img {
     box-sizing: border-box;
 }
 
-/* Skip links for accessibility */
 .skip-link {
     position: absolute;
     top: -40px;

@@ -1,11 +1,9 @@
-// API service for NOAA Fisheries data - Updated for SSR support with SolidStart cache
 import { cache } from "@solidjs/router";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-// Server-side cached data fetching
 export const getAllFishData = cache(async () => {
   "use server";
   console.log("[SSR] Fetching all fish data on server...");
@@ -25,7 +23,6 @@ export const getAllFishData = cache(async () => {
 
 class ApiService {
   async fetchAllFishData() {
-    // For client-side compatibility, fallback to direct fetch
     if (typeof window !== "undefined") {
       try {
         const response = await fetch(`${API_BASE_URL}/gofish?apikey=${API_KEY}`);
@@ -38,17 +35,14 @@ class ApiService {
         throw error;
       }
     }
-    // On server, use cached version
     return await getAllFishData();
   }
 
-  // Process fish data to group by regions and calculate averages
   async fetchRegions() {
     try {
       const fishData = await this.fetchAllFishData();
       const regionMap = new Map();
 
-      // Group fish by NOAAFisheriesRegion
       fishData.forEach((fish) => {
         const regionName = fish.NOAAFisheriesRegion;
         if (!regionName) return;
@@ -66,7 +60,6 @@ class ApiService {
         const region = regionMap.get(regionName);
         region.fish.push(fish);
 
-        // Parse nutritional data
         const calories = parseFloat(fish.Calories) || 0;
         const fat = parseFloat(fish.FatTotal?.replace(" g", "")) || 0;
 
@@ -75,7 +68,6 @@ class ApiService {
         region.count++;
       });
 
-      // Calculate averages and return regions
       return Array.from(regionMap.values()).map((region) => ({
         name: region.name,
         avgCalories: region.count > 0 ? region.totalCalories / region.count : 0,
@@ -118,8 +110,6 @@ class ApiService {
     return regionName.toLowerCase().replace(/\s+/g, "-");
   }
 }
-
-// Helper function for region calculations
 function calculateRegionStats(fishData) {
   const regionMap = new Map();
 
@@ -141,14 +131,12 @@ function calculateRegionStats(fishData) {
     const regionData = regionMap.get(region);
     regionData.fish.push(fish);
 
-    // Parse and accumulate calories
     const calories = parseFloat(fish.Calories);
     if (!isNaN(calories)) {
       regionData.totalCalories += calories;
       regionData.validCalories++;
     }
 
-    // Parse and accumulate fat (handle "g" suffix)
     const fatStr = fish.FatTotal;
     if (fatStr) {
       const fat = parseFloat(fatStr.replace(/[^\d.]/g, ""));
@@ -159,7 +147,6 @@ function calculateRegionStats(fishData) {
     }
   });
 
-  // Convert map to array and calculate averages
   return Array.from(regionMap.values()).map((region) => ({
     name: region.name,
     fishCount: region.fish.length,
@@ -168,7 +155,6 @@ function calculateRegionStats(fishData) {
   }));
 }
 
-// Server-side cached region data
 export const getRegionsData = cache(async () => {
   "use server";
   console.log("[SSR] Processing regions data on server...");
@@ -183,13 +169,11 @@ export const getRegionsData = cache(async () => {
   }
 }, "regionsData");
 
-// Helper function to format region names
 function formatRegionNameToId(regionName) {
   if (!regionName) return "";
   return regionName.toLowerCase().replace(/\s+/g, "-");
 }
 
-// Server-side cached fish by region
 export const getFishByRegion = cache(async (regionId) => {
   "use server";
   console.log(`[SSR] Fetching fish data for region: ${regionId}`);
@@ -207,7 +191,6 @@ export const getFishByRegion = cache(async (regionId) => {
   }
 }, "fishByRegion");
 
-// Server-side cached region info
 export const getRegionData = cache(async (regionId) => {
   "use server";
   console.log(`[SSR] Fetching region metadata for: ${regionId}`);

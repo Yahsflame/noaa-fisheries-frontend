@@ -5,7 +5,6 @@ const ThemeContext = createContext();
 export function ThemeProvider(props) {
   const [isDark, setIsDark] = createSignal(false);
 
-  // Initialize theme from localStorage or system preference
   onMount(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme");

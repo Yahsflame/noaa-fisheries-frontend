@@ -6,31 +6,26 @@ import { getRegionsData } from "~/services/api";
 import ApiService from "~/services/api";
 
 export default function Home() {
-  // Server-side data fetching with createAsync
   const regions = createAsync(() => getRegionsData());
 
-  // Client-side prefetching after component mounts
   onMount(() => {
     const regionsData = regions();
     if (regionsData && regionsData.length > 0) {
       import("~/utils/imagePrefetch").then(async ({ prefetchFirstImages }) => {
         try {
-          // Prefetch images for all regions with staggered loading
           for (let i = 0; i < regionsData.length; i++) {
             const region = regionsData[i];
             const regionId = ApiService.formatRegionNameToId(region.name);
 
-            // Stagger the requests to avoid overwhelming the server
             setTimeout(async () => {
               try {
                 const fishData = await ApiService.fetchFishByRegion(regionId);
-                // Use lower priority for regions after the first few
                 const priority = i < 3 ? 'low' : 'auto';
                 prefetchFirstImages(fishData, 3, priority);
               } catch (error) {
                 console.warn(`Failed to prefetch images for region ${region.name}:`, error);
               }
-            }, i * 200); // 200ms delay between each region
+            }, i * 200);
           }
         } catch (error) {
           console.warn('Failed to prefetch images for regions:', error);
@@ -220,35 +215,6 @@ export default function Home() {
 
             .region-card-content {
               padding: 1rem;
-            }
-          }
-
-          .loading-more {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.1rem;
-            color: #1976d2;
-            font-style: italic;
-          }
-
-          .end-message {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1rem;
-            color: #666;
-            border-top: 1px solid #eee;
-            margin-top: 2rem;
-          }
-
-          @media (max-width: 480px) {
-            .loading-more {
-              padding: 1.5rem;
-              font-size: 1rem;
-            }
-
-            .end-message {
-              padding: 1.5rem;
-              font-size: 0.9rem;
             }
           }
         `}</style>

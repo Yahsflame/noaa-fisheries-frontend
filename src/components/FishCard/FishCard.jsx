@@ -15,28 +15,25 @@ export default function FishCard(props) {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Prefetch remaining gallery images when card comes into view
   onMount(() => {
     const checkAndPrefetch = () => {
       if (isVisible() && !hasPrefetched()) {
-        // Only prefetch remaining images if this card has multiple images
+
         if (props.fish.ImageGallery && props.fish.ImageGallery.length > 1) {
           import("~/utils/imagePrefetch").then(({ prefetchRemainingGallery }) => {
             const debugMode = import.meta.env.DEV;
             prefetchRemainingGallery(props.fish, debugMode);
-            markAsPrefetched(); // Mark as complete to prevent re-prefetching
+            markAsPrefetched();
           });
         } else {
-          markAsPrefetched(); // Mark as complete even if no images to prefetch
+          markAsPrefetched();
         }
       }
     };
 
-    // Check initially and watch for changes
     checkAndPrefetch();
     const interval = setInterval(checkAndPrefetch, 200);
 
-    // Cleanup
     return () => clearInterval(interval);
   });
 

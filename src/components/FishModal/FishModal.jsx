@@ -9,11 +9,9 @@ export default function FishModal(props) {
   let modalRef;
   let previousFocus;
 
-  // Check if we have images
   const hasImageGallery = () =>
     fish.ImageGallery && fish.ImageGallery.length > 0;
 
-  // Get fallback image
   const getFallbackImage = () => {
     if (fish.SpeciesIllustrationPhoto && fish.SpeciesIllustrationPhoto.src) {
       return fish.SpeciesIllustrationPhoto;
@@ -36,7 +34,7 @@ export default function FishModal(props) {
   const handleClose = () => {
     onClose();
     if (typeof document !== "undefined" && previousFocus) {
-      previousFocus.focus(); // Return focus to trigger button
+      previousFocus.focus();
     }
   };
 
@@ -58,49 +56,39 @@ export default function FishModal(props) {
     }
   };
 
-  // Handle focus management and body scroll locking
   createEffect(() => {
     if (typeof document !== "undefined") {
       if (isOpen()) {
-        // Store current scroll position
         const scrollY = window.scrollY;
 
-        // Lock body scroll
         document.body.style.overflow = "hidden";
         document.body.style.position = "fixed";
         document.body.style.top = `-${scrollY}px`;
         document.body.style.width = "100%";
 
-        // Store scroll position for restoration
         document.body.setAttribute('data-scroll-y', scrollY.toString());
 
-        // Focus management
         previousFocus = document.activeElement;
         requestAnimationFrame(() => {
           modalRef?.focus();
         });
       } else {
-        // Get the stored scroll position
         const scrollY = document.body.getAttribute('data-scroll-y');
 
-        // Unlock body scroll
         document.body.style.overflow = "";
         document.body.style.position = "";
         document.body.style.top = "";
         document.body.style.width = "";
 
-        // Restore scroll position
         if (scrollY) {
           window.scrollTo(0, parseInt(scrollY || '0'));
         }
 
-        // Clean up scroll position data
         document.body.removeAttribute('data-scroll-y');
       }
     }
   });
 
-  // Cleanup scroll lock on unmount
   onCleanup(() => {
     if (typeof document !== "undefined") {
       const scrollY = document.body.getAttribute('data-scroll-y');
@@ -110,7 +98,6 @@ export default function FishModal(props) {
       document.body.style.top = "";
       document.body.style.width = "";
 
-      // Restore scroll position if modal was open during cleanup
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || '0'));
       }

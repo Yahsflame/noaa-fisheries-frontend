@@ -8,7 +8,7 @@ export default function NotFound() {
       <HttpStatusCode code={404} />
       <h1>Page Not Found</h1>
       <p>
-        <a href="/" target="_blank">
+        <a href="/">
           Return Home
         </a>
       </p>

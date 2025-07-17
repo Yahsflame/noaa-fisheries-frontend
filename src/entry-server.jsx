@@ -1,4 +1,3 @@
-// @refresh reload
 import { createHandler, StartServer } from "@solidjs/start/server";
 
 export default createHandler(() => (
@@ -11,7 +10,6 @@ export default createHandler(() => (
           <meta name="description" content="NOAA Fisheries regional data with nutritional information and sustainable seafood guidance" />
           <link rel="icon" href="/favicon.ico" />
 
-          {/* DNS prefetching for faster image loading */}
           <link rel="dns-prefetch" href="//www.fishwatch.gov" />
           <link rel="dns-prefetch" href="//media.fisheries.noaa.gov" />
           <link rel="preconnect" href="//www.fishwatch.gov" crossorigin />
