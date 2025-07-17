@@ -2,6 +2,7 @@ import { createSignal, createEffect, For, Show, onCleanup } from "solid-js";
 import { A } from "@solidjs/router";
 import ApiService from "~/services/api";
 import { BREAKPOINTS } from "~/constants";
+import ThemeToggle from "~/components/ThemeToggle/ThemeToggle";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -149,14 +150,19 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          class="mobile-menu-btn"
-          onClick={toggleMenu}
-          aria-label="Toggle navigation menu"
-        >
-          <FishIcon />
-        </button>
+        {/* Desktop Theme Toggle & Mobile Menu Button */}
+        <div class="nav-controls">
+          <div class="desktop-theme-toggle">
+            <ThemeToggle />
+          </div>
+          <button
+            class="mobile-menu-btn"
+            onClick={toggleMenu}
+            aria-label="Toggle navigation menu"
+          >
+            <FishIcon />
+          </button>
+        </div>
 
         {/* Mobile Slide-out Menu */}
         <div class={`mobile-nav ${isMenuOpen() ? "open" : ""}`}>
@@ -179,6 +185,9 @@ export default function Navbar() {
                 )}
               </For>
             )}
+            <div class="mobile-theme-toggle">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 

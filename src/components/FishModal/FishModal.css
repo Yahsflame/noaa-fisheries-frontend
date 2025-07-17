@@ -1,36 +1,45 @@
+/* Modal Backdrop - Full screen overlay that covers everything */
 .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    padding: var(--spacing-md);
+    z-index: 9999;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
+/* Modal Content - 80% of viewport width and height, centered */
 .modal-content {
-    background: var(--color-surface);
-    border-radius: var(--border-radius-lg);
-    width: 80%;
-    height: 80%;
+    background: white;
+    border-radius: 12px;
+    width: 80vw;
+    height: 80vh;
     max-width: 1200px;
     max-height: 900px;
+    min-height: 400px;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     position: relative;
+    margin: auto;
+    box-sizing: border-box;
 }
 
 .modal-header {
     display: flex;
     justify-content: flex-end;
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border);
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
 }
 
 .modal-close {
@@ -38,7 +47,7 @@
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: var(--color-text-secondary);
+    color: #666;
     padding: 0;
     width: 40px;
     height: 40px;
@@ -46,21 +55,21 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color var(--transition-fast);
+    transition: background-color 0.2s ease;
 }
 
 .modal-close:hover {
-    background-color: var(--color-background);
-    color: var(--color-text);
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 .modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: var(--spacing-xl);
+    padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xl);
+    gap: 2rem;
 }
 
 .modal-image-section {
@@ -73,8 +82,8 @@
     width: 60%;
     height: auto;
     object-fit: cover;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-sm);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-image-placeholder {
@@ -85,8 +94,8 @@
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
-    color: var(--color-text-muted);
-    border-radius: var(--border-radius);
+    color: #999;
+    border-radius: 8px;
     font-size: 1.1rem;
 }
 
@@ -94,52 +103,52 @@
     width: 100%;
     max-width: 400px;
     height: 300px;
-    border-radius: var(--border-radius);
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-info {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 1.5rem;
 }
 
 .modal-title-section {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .modal-fish-name {
     font-size: 2rem;
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
+    color: #1976d2;
+    margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
 .modal-scientific-name {
     font-size: 1.1rem;
-    color: var(--color-text-secondary);
+    color: #666;
     font-style: italic;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.5rem;
 }
 
 .modal-region {
     font-size: 1rem;
-    color: var(--color-text-muted);
+    color: #888;
     font-weight: 500;
 }
 
 .modal-nutrition-section h3 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-md);
+    color: #1976d2;
+    margin-bottom: 1rem;
     font-size: 1.3rem;
 }
 
 .modal-nutrition-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .nutrition-detail {
@@ -147,25 +156,25 @@
     flex-direction: column;
     padding: 0.75rem;
     background-color: #f8f9fa;
-    border-radius: var(--border-radius-sm);
-    border-left: 3px solid var(--color-primary);
+    border-radius: 6px;
+    border-left: 3px solid #1976d2;
 }
 
 .nutrition-detail .nutrition-label {
     font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-xs);
+    color: #666;
+    margin-bottom: 0.25rem;
 }
 
 .nutrition-detail .nutrition-value {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--color-text);
+    color: #333;
 }
 
 .modal-section {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
 }
 
 .modal-section:last-child {
@@ -174,22 +183,22 @@
 }
 
 .modal-section h3 {
-    color: var(--color-primary);
+    color: #1976d2;
     margin-bottom: 0.75rem;
     font-size: 1.2rem;
 }
 
 .modal-section p {
     line-height: 1.6;
-    color: var(--color-text);
+    color: #333;
     margin: 0;
 }
 
 .modal-quote {
     background-color: #f8f9fa;
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--color-primary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
 }
 
 .modal-quote blockquote {
@@ -203,14 +212,13 @@
 /* Tablet Styles */
 @media (max-width: 1024px) {
     .modal-content {
-        width: 90%;
-        height: 85%;
+        width: 90vw;
+        height: 85vh;
     }
 
     .modal-body {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
-        padding: var(--spacing-lg);
+        gap: 1.5rem;
+        padding: 1.5rem;
     }
 
     .modal-image {
@@ -226,12 +234,13 @@
 /* Mobile Styles */
 @media (max-width: 768px) {
     .modal-backdrop {
-        padding: var(--spacing-sm);
+        padding: 0.5rem;
     }
 
     .modal-content {
-        width: 95%;
-        height: 90%;
+        width: 95vw;
+        height: 90vh;
+        min-height: 300px;
     }
 
     .modal-header {
@@ -245,8 +254,8 @@
     }
 
     .modal-body {
-        padding: var(--spacing-md);
-        gap: var(--spacing-md);
+        padding: 1rem;
+        gap: 1rem;
     }
 
     .modal-fish-name {
@@ -278,7 +287,7 @@
     }
 
     .nutrition-detail {
-        padding: var(--spacing-sm);
+        padding: 0.5rem;
     }
 
     .modal-section h3 {
@@ -293,8 +302,9 @@
 /* Small Mobile Styles */
 @media (max-width: 480px) {
     .modal-content {
-        width: 98%;
-        height: 95%;
+        width: 98vw;
+        height: 95vh;
+        min-height: 250px;
     }
 
     .modal-fish-name {

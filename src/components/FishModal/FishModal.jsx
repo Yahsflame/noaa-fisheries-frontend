@@ -1,4 +1,5 @@
-import { Show, onMount } from "solid-js";
+import { Show, onMount, createEffect, onCleanup } from "solid-js";
+import { Portal } from "solid-js/web";
 import ImageSlider from "../ImageSlider/ImageSlider";
 import { stripHtml } from "~/utils/textUtils";
 import "./FishModal.css";
@@ -57,32 +58,83 @@ export default function FishModal(props) {
     }
   };
 
-  // Handle focus management
-  onMount(() => {
-    if (typeof document !== "undefined" && isOpen()) {
-      previousFocus = document.activeElement;
-      // Use requestAnimationFrame to ensure modal is rendered
-      requestAnimationFrame(() => {
-        modalRef?.focus();
-      });
+  // Handle focus management and body scroll locking
+  createEffect(() => {
+    if (typeof document !== "undefined") {
+      if (isOpen()) {
+        // Store current scroll position
+        const scrollY = window.scrollY;
+
+        // Lock body scroll
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = "100%";
+
+        // Store scroll position for restoration
+        document.body.setAttribute('data-scroll-y', scrollY.toString());
+
+        // Focus management
+        previousFocus = document.activeElement;
+        requestAnimationFrame(() => {
+          modalRef?.focus();
+        });
+      } else {
+        // Get the stored scroll position
+        const scrollY = document.body.getAttribute('data-scroll-y');
+
+        // Unlock body scroll
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+
+        // Restore scroll position
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY || '0'));
+        }
+
+        // Clean up scroll position data
+        document.body.removeAttribute('data-scroll-y');
+      }
+    }
+  });
+
+  // Cleanup scroll lock on unmount
+  onCleanup(() => {
+    if (typeof document !== "undefined") {
+      const scrollY = document.body.getAttribute('data-scroll-y');
+
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+
+      // Restore scroll position if modal was open during cleanup
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0'));
+      }
+
+      document.body.removeAttribute('data-scroll-y');
     }
   });
 
   return (
     <Show when={isOpen()}>
-      <div
-        ref={modalRef}
-        class="modal-backdrop"
-        onClick={handleBackdropClick}
-        onKeyDown={(e) => {
-          handleKeyDown(e);
-          trapFocus(e);
-        }}
-        tabIndex="-1"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-      >
+      <Portal>
+        <div
+          ref={modalRef}
+          class="modal-backdrop"
+          onClick={handleBackdropClick}
+          onKeyDown={(e) => {
+            handleKeyDown(e);
+            trapFocus(e);
+          }}
+          tabIndex="-1"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
         <div class="modal-content">
           <div class="modal-header">
             <button
@@ -209,7 +261,8 @@ export default function FishModal(props) {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </Portal>
     </Show>
   );
 }

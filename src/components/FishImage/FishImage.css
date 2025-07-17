@@ -24,7 +24,7 @@
     justify-content: center;
     color: var(--color-text-muted);
     font-size: 1rem;
-    background-color: #f0f0f0;
+    background-color: var(--color-placeholder);
 }
 
 .fish-card-slider {

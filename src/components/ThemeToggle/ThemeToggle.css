@@ -1,0 +1,81 @@
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.theme-toggle:focus {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  transition: all var(--transition-normal);
+  transform-origin: center;
+}
+
+/* Animation for theme switching */
+.theme-toggle:active .theme-icon {
+  transform: rotate(180deg) scale(0.8);
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .theme-toggle:focus {
+  outline-color: var(--color-primary-light);
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .theme-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Smooth icon transition */
+.theme-icon {
+  animation: iconFadeIn 0.3s ease-in-out;
+}
+
+@keyframes iconFadeIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-icon {
+    transition: none;
+    animation: none;
+  }
+
+  .theme-toggle:active .theme-icon {
+    transform: none;
+  }
+}

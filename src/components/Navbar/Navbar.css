@@ -144,6 +144,25 @@
 /* Desktop Navigation */
 .desktop-nav {
     display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* Navigation Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.desktop-theme-toggle {
+    display: block;
+}
+
+.mobile-theme-toggle {
+    margin-top: var(--spacing-md);
+    display: flex;
+    justify-content: center;
 }
 
 /* Responsive Design - 991px and below */
@@ -153,6 +172,10 @@
     }
 
     .desktop-nav {
+        display: none;
+    }
+
+    .desktop-theme-toggle {
         display: none;
     }
 
