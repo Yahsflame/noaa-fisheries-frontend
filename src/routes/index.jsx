@@ -2,8 +2,7 @@ import { Title } from "@solidjs/meta";
 import { createAsync } from "@solidjs/router";
 import { For, Show, onMount } from "solid-js";
 import { A } from "@solidjs/router";
-import { getRegionsData } from "~/services/api";
-import ApiService from "~/services/api";
+import { getRegionsData, fetchFishByRegion, formatRegionNameToId } from "~/services/api";
 
 export default function Home() {
   const regions = createAsync(() => getRegionsData());
@@ -15,11 +14,11 @@ export default function Home() {
         try {
           for (let i = 0; i < regionsData.length; i++) {
             const region = regionsData[i];
-            const regionId = ApiService.formatRegionNameToId(region.name);
+            const regionId = formatRegionNameToId(region.name);
 
             setTimeout(async () => {
               try {
-                const fishData = await ApiService.fetchFishByRegion(regionId);
+                const fishData = await fetchFishByRegion(regionId);
                 const priority = i < 3 ? 'low' : 'auto';
                 prefetchFirstImages(fishData, 3, priority);
               } catch (error) {
@@ -53,7 +52,7 @@ export default function Home() {
             <For each={regions()}>
               {(region) => (
                 <A
-                  href={`/region/${ApiService.formatRegionNameToId(region.name)}`}
+                  href={`/region/${formatRegionNameToId(region.name)}`}
                   class="region-card"
                 >
                   <div class="region-card-content">

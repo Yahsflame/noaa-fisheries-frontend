@@ -21,6 +21,7 @@ export default function ImageSlider(props) {
 
   const nextImage = () => {
     if (images && images.length > 0) {
+      setIsImageLoading(true);
       const newIndex = (currentIndex() + 1) % images.length;
       setCurrentIndex(newIndex);
     }
@@ -28,6 +29,7 @@ export default function ImageSlider(props) {
 
   const prevImage = () => {
     if (images && images.length > 0) {
+      setIsImageLoading(true);
       const newIndex = (currentIndex() - 1 + images.length) % images.length;
       setCurrentIndex(newIndex);
     }
@@ -35,6 +37,7 @@ export default function ImageSlider(props) {
 
   const goToImage = (index) => {
     if (index !== currentIndex()) {
+      setIsImageLoading(true);
       setCurrentIndex(index);
     }
   };

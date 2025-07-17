@@ -12,6 +12,11 @@ export default function ErrorBoundary(props) {
             <button class="error-boundary-button" onClick={reset}>
               Try again
             </button>
+            <p>
+              <a href="/">
+                Or click here to return home
+              </a>
+            </p>
             <details class="error-boundary-details">
               <summary>Error details</summary>
               <pre class="error-boundary-pre">{err.message}</pre>

@@ -7,8 +7,8 @@ import {
   onMount,
 } from "solid-js";
 import { useParams, createAsync } from "@solidjs/router";
+import { redirect } from "@solidjs/router";
 import { getFishByRegion, getRegionData } from "~/services/api";
-import ApiService from "~/services/api";
 import FishCard from "~/components/FishCard/FishCard";
 import FishCardSkeleton from "~/components/FishCardSkeleton/FishCardSkeleton";
 import { PAGINATION } from "~/constants";
@@ -16,8 +16,34 @@ import "./region.css";
 
 export default function RegionPage() {
   const params = useParams();
-  const regionData = createAsync(() => getRegionData(params.regionId));
-  const fish = createAsync(() => getFishByRegion(params.regionId));
+
+  // Validate region exists and redirect to 404 if not
+  const regionData = createAsync(async () => {
+    try {
+      const data = await getRegionData(params.regionId);
+      if (!data) {
+        throw redirect("/404");
+      }
+      return data;
+    } catch (error) {
+      // Don't log the error, just redirect to 404
+      throw redirect("/404");
+    }
+  });
+
+  const fish = createAsync(async () => {
+    try {
+      const data = await getFishByRegion(params.regionId);
+      // Optional: Also validate fish data exists
+      if (!data) {
+        throw redirect("/404");
+      }
+      return data;
+    } catch (error) {
+      // Don't log the error, just redirect to 404
+      throw redirect("/404");
+    }
+  });
 
   const [visibleCount, setVisibleCount] = createSignal(
     PAGINATION.INITIAL_VISIBLE_COUNT,
@@ -94,13 +120,9 @@ export default function RegionPage() {
     };
   });
 
-  const formatRegionName = (regionId) => {
-    return regionId.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-  };
-
   const regionName = () => {
     const region = regionData();
-    return region?.name || formatRegionName(params.regionId);
+    return region?.name || params.regionId.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   return (

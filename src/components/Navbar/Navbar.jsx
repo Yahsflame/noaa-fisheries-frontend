@@ -1,6 +1,6 @@
 import { createSignal, createEffect, For, Show, onCleanup } from "solid-js";
 import { A } from "@solidjs/router";
-import ApiService from "~/services/api";
+import { fetchRegions, formatRegionNameToId } from "~/services/api";
 import { BREAKPOINTS } from "~/constants";
 import ThemeToggle from "~/components/ThemeToggle/ThemeToggle";
 import FishIcon from "~/components/svgs/FishIcon";
@@ -79,7 +79,7 @@ export default function Navbar() {
   createEffect(async () => {
     try {
       setLoading(true);
-      const data = await ApiService.fetchRegions();
+      const data = await fetchRegions();
       setRegions(data);
       setError(null);
     } catch (err) {
@@ -107,7 +107,7 @@ export default function Navbar() {
             <For each={regions()}>
               {(region) => (
                 <A
-                  href={`/region/${ApiService.formatRegionNameToId(region.name)}`}
+                  href={`/region/${formatRegionNameToId(region.name)}`}
                   class="nav-link"
                 >
                   {region.name}
@@ -141,7 +141,7 @@ export default function Navbar() {
               <For each={regions()}>
                 {(region) => (
                   <A
-                    href={`/region/${ApiService.formatRegionNameToId(region.name)}`}
+                    href={`/region/${formatRegionNameToId(region.name)}`}
                     class="nav-link mobile-nav-link"
                     onClick={closeMenu}
                   >
