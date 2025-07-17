@@ -1,44 +1,40 @@
 .fish-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--color-surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
     transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal);
 }
 
 .fish-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-.fish-card:hover .fish-image {
-    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
 }
 
 .fish-info {
-    padding: 1.5rem;
+    padding: var(--spacing-lg);
 }
 
 .learn-more-btn {
-    background-color: #1976d2;
+    background-color: var(--color-primary);
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
+    padding: 0.75rem var(--spacing-lg);
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    margin-top: 1rem;
+    margin-top: var(--spacing-md);
     width: 100%;
     transition:
-        background-color 0.3s ease,
-        transform 0.2s ease;
+        background-color var(--transition-normal),
+        transform var(--transition-fast);
 }
 
 .learn-more-btn:hover {
-    background-color: #1565c0;
+    background-color: var(--color-primary-dark);
     transform: translateY(-1px);
 }
 
@@ -48,11 +44,11 @@
 
 @media (max-width: 768px) {
     .fish-card {
-        margin-bottom: 1rem;
+        margin-bottom: var(--spacing-md);
     }
 
     .fish-info {
-        padding: 1rem;
+        padding: var(--spacing-md);
     }
 
     .learn-more-btn {
@@ -68,6 +64,6 @@
 
     .learn-more-btn {
         font-size: 0.8rem;
-        padding: 0.5rem 1rem;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
 }

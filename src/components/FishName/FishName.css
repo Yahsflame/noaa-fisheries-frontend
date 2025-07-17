@@ -1,37 +1,37 @@
 .fish-name-container {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .fish-name {
   font-size: 1.3rem;
-  color: #1976d2;
-  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
   font-weight: 600;
 }
 
 .scientific-name {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-text-secondary);
   font-style: italic;
   margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
   .fish-name {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .scientific-name {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
   .fish-name {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .scientific-name {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 }
