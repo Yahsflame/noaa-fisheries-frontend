@@ -21,7 +21,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f5f5f5;
+    background-color: var(--color-placeholder);
 }
 
 .image-wrapper {
@@ -44,6 +44,9 @@
     transition:
         transform 0.3s ease,
         opacity 0.2s ease;
+    will-change: opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .image-loading-overlay {
@@ -55,15 +58,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--color-surface);
+    opacity: 0.9;
     z-index: 5;
 }
 
 .loading-spinner {
     width: 30px;
     height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #1976d2;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -74,8 +78,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0;
-    color: #999;
+    background-color: var(--color-placeholder);
+    color: var(--color-text-muted);
     font-size: 1rem;
 }
 
@@ -125,7 +129,7 @@
     background: linear-gradient(
         to bottom,
         transparent,
-        rgba(255, 255, 255, 0.9)
+        var(--color-surface)
     );
     position: absolute;
     bottom: 0;
@@ -139,7 +143,8 @@
     height: 10px;
     border-radius: 50%;
     border: none;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: var(--color-text-muted);
+    opacity: 0.6;
     cursor: pointer;
     transition:
         background-color 0.3s ease,
@@ -147,21 +152,67 @@
 }
 
 .slider-dot:hover {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--color-text-muted);
+    opacity: 0.8;
     transform: scale(1.1);
 }
 
 .slider-dot.active {
-    background-color: #1976d2;
+    background-color: var(--color-primary);
     transform: scale(1.2);
+}
+
+/* Enhanced loading states */
+.slider-dot.loaded {
+    background-color: var(--color-primary);
+    opacity: 0.8;
+}
+
+.slider-dot.loaded.active {
+    opacity: 1;
+}
+
+/* Priority loading styles */
+.image-slider.priority-loading .slider-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Faster transitions for cached images */
+.image-wrapper:not(.loading) .slider-image {
+    transition: opacity 0.1s ease-in-out;
+}
+
+/* Performance optimizations */
+.slider-image {
+    image-rendering: optimizeQuality;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Reduce layout shifts */
+.image-container::before {
+    content: '';
+    display: block;
+    padding-bottom: 60%; /* Maintain aspect ratio */
+    background-color: var(--color-placeholder);
+}
+
+.image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .image-counter {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -248,12 +299,12 @@
 }
 
 .slider-btn:focus {
-    outline: 2px solid #1976d2;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
 .slider-dot:focus {
-    outline: 2px solid #1976d2;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 

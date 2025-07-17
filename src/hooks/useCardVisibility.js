@@ -1,8 +1,13 @@
 import { createSignal, createEffect, onCleanup } from "solid-js";
 
-export function useLazyLoad(threshold = 100) {
+/**
+ * Enhanced visibility hook specifically for card-based prefetching
+ * Tracks when cards come into view and manages prefetching state
+ */
+export function useCardVisibility(threshold = 100) {
   const [isVisible, setIsVisible] = createSignal(false);
   const [element, setElement] = createSignal(null);
+  const [hasPrefetched, setHasPrefetched] = createSignal(false);
 
   let observer = null;
   let hasBeenVisible = false;
@@ -26,9 +31,9 @@ export function useLazyLoad(threshold = 100) {
           if (entry.isIntersecting && !hasBeenVisible) {
             hasBeenVisible = true;
             setIsVisible(true);
-            // Clean up observer immediately after becoming visible
-            observer.disconnect();
-            observer = null;
+
+            // Don't disconnect immediately - let the component handle prefetching
+            // The component will call markAsPrefetched() when done
           }
         });
       },
@@ -48,5 +53,14 @@ export function useLazyLoad(threshold = 100) {
     }
   });
 
-  return [isVisible, setElement];
+  const markAsPrefetched = () => {
+    setHasPrefetched(true);
+    // Clean up observer after prefetching is complete
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+  };
+
+  return [isVisible, setElement, hasPrefetched, markAsPrefetched];
 }

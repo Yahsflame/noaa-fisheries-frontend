@@ -18,7 +18,7 @@
 
 /* Modal Content - 80% of viewport width and height, centered */
 .modal-content {
-    background: white;
+    background: var(--color-background);
     border-radius: 12px;
     width: 80vw;
     height: 80vh;
@@ -38,7 +38,7 @@
     display: flex;
     justify-content: flex-end;
     padding: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
 }
 
@@ -47,7 +47,7 @@
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: #666;
+    color: var(--color-text-secondary);
     padding: 0;
     width: 40px;
     height: 40px;
@@ -55,12 +55,12 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .modal-close:hover {
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: var(--color-surface);
+    color: var(--color-text);
 }
 
 .modal-body {
@@ -93,8 +93,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0;
-    color: #999;
+    background-color: var(--color-placeholder);
+    color: var(--color-text-muted);
     border-radius: 8px;
     font-size: 1.1rem;
 }
@@ -120,26 +120,26 @@
 
 .modal-fish-name {
     font-size: 2rem;
-    color: #1976d2;
+    color: var(--color-primary);
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
 .modal-scientific-name {
     font-size: 1.1rem;
-    color: #666;
+    color: var(--color-text-secondary);
     font-style: italic;
     margin-bottom: 0.5rem;
 }
 
 .modal-region {
     font-size: 1rem;
-    color: #888;
+    color: var(--color-text-muted);
     font-weight: 500;
 }
 
 .modal-nutrition-section h3 {
-    color: #1976d2;
+    color: var(--color-primary);
     margin-bottom: 1rem;
     font-size: 1.3rem;
 }
@@ -183,22 +183,23 @@
 }
 
 .modal-section h3 {
-    color: #1976d2;
+    color: var(--color-primary);
     margin-bottom: 0.75rem;
     font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .modal-section p {
+    color: var(--color-text);
     line-height: 1.6;
-    color: #333;
     margin: 0;
 }
 
 .modal-quote {
-    background-color: #f8f9fa;
+    background: var(--color-surface);
     padding: 1.5rem;
     border-radius: 8px;
-    border-left: 4px solid #1976d2;
+    border-left: 4px solid var(--color-primary);
 }
 
 .modal-quote blockquote {

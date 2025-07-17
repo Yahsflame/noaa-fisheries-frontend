@@ -50,6 +50,19 @@ export default function RegionPage() {
     }
   });
 
+  // Advanced prefetching strategy when fish data loads
+  createEffect(() => {
+    const fishData = fish();
+    if (fishData.length > 0) {
+      // Import the prefetch utility
+      import("~/utils/imagePrefetch").then(({ prefetchRegionImages }) => {
+        // Enable debug mode in development
+        const debugMode = import.meta.env.DEV;
+        prefetchRegionImages(fishData, debugMode);
+      });
+    }
+  });
+
   // Create computed values for lazy loading
   const visibleFish = createMemo(() => {
     return fish().slice(0, visibleCount());

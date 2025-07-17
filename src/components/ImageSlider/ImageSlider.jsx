@@ -2,7 +2,7 @@ import { createSignal, createEffect, Show, For } from "solid-js";
 import "./ImageSlider.css";
 
 export default function ImageSlider(props) {
-  const { images, speciesName, className = "" } = props;
+  const { images, speciesName, className = "", isVisible = true } = props;
   const [currentIndex, setCurrentIndex] = createSignal(0);
   const [imagesLoaded, setImagesLoaded] = createSignal({});
   const [isImageLoading, setIsImageLoading] = createSignal(false);
@@ -10,47 +10,46 @@ export default function ImageSlider(props) {
   // If no images or only one image, don't show slider controls
   const hasMultipleImages = () => images && images.length > 1;
 
-  // Preload images after first image loads
+  // Aggressive preloading strategy
   createEffect(() => {
-    if (images && images.length > 1) {
-      // Mark first image as loaded immediately
-      setImagesLoaded((prev) => ({
-        ...prev,
-        0: true,
-      }));
+    if (!images || images.length === 0 || !isVisible) return;
 
-      // Preload remaining images in order of priority
-      // Priority: next image, previous image, then rest
-      const preloadOrder = [1];
-      if (images.length > 2) preloadOrder.push(images.length - 1);
-      for (let i = 2; i < images.length - 1; i++) {
-        preloadOrder.push(i);
-      }
+    // Immediately mark first image as loaded to prevent loading state
+    setImagesLoaded((prev) => ({ ...prev, 0: true }));
 
-      preloadOrder.forEach((index, priority) => {
+    // Start preloading immediately, no delays
+    if (images.length > 1) {
+      // Load next two images immediately for faster navigation
+      [1, 2].forEach((index) => {
         if (index < images.length) {
-          setTimeout(() => {
-            const img = new Image();
-            img.onload = () => {
-              setImagesLoaded((prev) => ({
-                ...prev,
-                [index]: true,
-              }));
-            };
-            img.onerror = () => {
-              console.warn(`Failed to preload image at index ${index}`);
-            };
-            img.src = images[index].src;
-          }, priority * 50); // Stagger loading to prevent overwhelming
+          const img = new Image();
+          img.fetchPriority = 'high'; // High priority for immediate next images
+          img.onload = () => {
+            setImagesLoaded((prev) => ({ ...prev, [index]: true }));
+          };
+          img.onerror = () => console.warn(`Failed to preload image at index ${index}`);
+          img.src = images[index].src;
         }
       });
+
+      // Load remaining images with lower priority
+      setTimeout(() => {
+        for (let i = 3; i < images.length; i++) {
+          const img = new Image();
+          img.fetchPriority = 'low';
+          img.onload = () => {
+            setImagesLoaded((prev) => ({ ...prev, [i]: true }));
+          };
+          img.onerror = () => console.warn(`Failed to preload image at index ${i}`);
+          img.src = images[i].src;
+        }
+      }, 100); // Minimal delay to not block main thread
     }
   });
 
   const nextImage = () => {
     if (images && images.length > 0) {
       const newIndex = (currentIndex() + 1) % images.length;
-      // Only show loading if image isn't already preloaded
       if (!imagesLoaded()[newIndex]) {
         setIsImageLoading(true);
       }
@@ -61,7 +60,6 @@ export default function ImageSlider(props) {
   const prevImage = () => {
     if (images && images.length > 0) {
       const newIndex = (currentIndex() - 1 + images.length) % images.length;
-      // Only show loading if image isn't already preloaded
       if (!imagesLoaded()[newIndex]) {
         setIsImageLoading(true);
       }
@@ -71,7 +69,6 @@ export default function ImageSlider(props) {
 
   const goToImage = (index) => {
     if (index !== currentIndex()) {
-      // Only show loading if image isn't already preloaded
       if (!imagesLoaded()[index]) {
         setIsImageLoading(true);
       }
@@ -89,7 +86,7 @@ export default function ImageSlider(props) {
 
   return (
     <div
-      class={`image-slider ${className}`}
+      class={`image-slider ${className} ${isVisible ? "priority-loading" : ""}`}
       onKeyDown={handleKeyDown}
       tabIndex="0"
     >
@@ -105,10 +102,13 @@ export default function ImageSlider(props) {
           <div class="image-container">
             <div class={`image-wrapper ${isImageLoading() ? "loading" : ""}`}>
               <img
-                key={currentIndex()}
+                key={`${currentIndex()}-${images[currentIndex()].src}`}
                 src={images[currentIndex()].src}
                 alt={images[currentIndex()].alt || speciesName}
                 class="slider-image"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
                 onLoad={() => setIsImageLoading(false)}
                 onError={() => setIsImageLoading(false)}
               />

@@ -22,6 +22,37 @@ export default function Home() {
     }
   });
 
+  // Prefetch images for all regions
+  createEffect(async () => {
+    const regionsData = regions();
+    if (regionsData.length > 0) {
+      try {
+        // Prefetch images for all regions with staggered loading
+        for (let i = 0; i < regionsData.length; i++) {
+          const region = regionsData[i];
+          const regionId = ApiService.formatRegionNameToId(region.name);
+
+          // Stagger the requests to avoid overwhelming the server
+          setTimeout(async () => {
+            try {
+              const fishData = await ApiService.fetchFishByRegion(regionId);
+
+              // Import and use prefetch utility
+              const { prefetchFirstImages } = await import("~/utils/imagePrefetch");
+              // Use lower priority for regions after the first few
+              const priority = i < 3 ? 'low' : 'auto';
+              prefetchFirstImages(fishData, 3, priority);
+            } catch (error) {
+              console.warn(`Failed to prefetch images for region ${region.name}:`, error);
+            }
+          }, i * 200); // 200ms delay between each region
+        }
+      } catch (error) {
+        console.warn('Failed to prefetch images for regions:', error);
+      }
+    }
+  });
+
   return (
     <>
       <Title>NOAA Fisheries Regions</Title>
