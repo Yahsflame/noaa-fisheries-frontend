@@ -5,7 +5,8 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "version": "vinxi version"
+    "version": "vinxi version",
+    "verify-ssr": "node scripts/verify-ssr.js"
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.4",

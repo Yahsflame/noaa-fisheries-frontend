@@ -15,12 +15,6 @@ export default function App() {
           <MetaProvider>
             <Title>NOAA Fisheries Regions</Title>
             <div class="app">
-              {/* DNS prefetching for faster image loading */}
-              <link rel="dns-prefetch" href="//www.fishwatch.gov" />
-              <link rel="dns-prefetch" href="//media.fisheries.noaa.gov" />
-              <link rel="preconnect" href="//www.fishwatch.gov" crossorigin />
-              <link rel="preconnect" href="//media.fisheries.noaa.gov" crossorigin />
-
               {/* Skip links for accessibility */}
               <a href="#main-content" class="skip-link">
                 Skip to main content

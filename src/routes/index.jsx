@@ -1,55 +1,41 @@
 import { Title } from "@solidjs/meta";
-import { createSignal, createEffect, For, Show } from "solid-js";
+import { createAsync } from "@solidjs/router";
+import { For, Show, onMount } from "solid-js";
 import { A } from "@solidjs/router";
+import { getRegionsData } from "~/services/api";
 import ApiService from "~/services/api";
 
 export default function Home() {
-  const [regions, setRegions] = createSignal([]);
-  const [loading, setLoading] = createSignal(true);
-  const [error, setError] = createSignal(null);
+  // Server-side data fetching with createAsync
+  const regions = createAsync(() => getRegionsData());
 
-  createEffect(async () => {
-    try {
-      setLoading(true);
-      const data = await ApiService.fetchRegions();
-      setRegions(data);
-      setError(null);
-    } catch (err) {
-      setError("Failed to load region data");
-      console.error("Error loading data:", err);
-    } finally {
-      setLoading(false);
-    }
-  });
-
-  // Prefetch images for all regions
-  createEffect(async () => {
+  // Client-side prefetching after component mounts
+  onMount(() => {
     const regionsData = regions();
-    if (regionsData.length > 0) {
-      try {
-        // Prefetch images for all regions with staggered loading
-        for (let i = 0; i < regionsData.length; i++) {
-          const region = regionsData[i];
-          const regionId = ApiService.formatRegionNameToId(region.name);
+    if (regionsData && regionsData.length > 0) {
+      import("~/utils/imagePrefetch").then(async ({ prefetchFirstImages }) => {
+        try {
+          // Prefetch images for all regions with staggered loading
+          for (let i = 0; i < regionsData.length; i++) {
+            const region = regionsData[i];
+            const regionId = ApiService.formatRegionNameToId(region.name);
 
-          // Stagger the requests to avoid overwhelming the server
-          setTimeout(async () => {
-            try {
-              const fishData = await ApiService.fetchFishByRegion(regionId);
-
-              // Import and use prefetch utility
-              const { prefetchFirstImages } = await import("~/utils/imagePrefetch");
-              // Use lower priority for regions after the first few
-              const priority = i < 3 ? 'low' : 'auto';
-              prefetchFirstImages(fishData, 3, priority);
-            } catch (error) {
-              console.warn(`Failed to prefetch images for region ${region.name}:`, error);
-            }
-          }, i * 200); // 200ms delay between each region
+            // Stagger the requests to avoid overwhelming the server
+            setTimeout(async () => {
+              try {
+                const fishData = await ApiService.fetchFishByRegion(regionId);
+                // Use lower priority for regions after the first few
+                const priority = i < 3 ? 'low' : 'auto';
+                prefetchFirstImages(fishData, 3, priority);
+              } catch (error) {
+                console.warn(`Failed to prefetch images for region ${region.name}:`, error);
+              }
+            }, i * 200); // 200ms delay between each region
+          }
+        } catch (error) {
+          console.warn('Failed to prefetch images for regions:', error);
         }
-      } catch (error) {
-        console.warn('Failed to prefetch images for regions:', error);
-      }
+      });
     }
   });
 
@@ -57,15 +43,10 @@ export default function Home() {
     <>
       <Title>NOAA Fisheries Regions</Title>
       <div class="home-page">
-        <Show when={loading()}>
-          <div class="loading">Loading regions...</div>
-        </Show>
-
-        <Show when={error()}>
-          <div class="error">{error()}</div>
-        </Show>
-
-        <Show when={!loading() && !error()}>
+        <Show
+          when={regions()}
+          fallback={<div class="loading">Loading regions...</div>}
+        >
           <header class="home-header">
             <h1>NOAA Fisheries Regions</h1>
             <p>
@@ -87,7 +68,7 @@ export default function Home() {
                         <span class="stat-label">Avg Calories:</span>
                         <span class="stat-value">
                           {region.avgCalories
-                            ? `${region.avgCalories.toFixed(1)} cal`
+                            ? `${Math.round(region.avgCalories * 10) / 10} cal`
                             : "N/A"}
                         </span>
                       </div>
@@ -95,7 +76,7 @@ export default function Home() {
                         <span class="stat-label">Avg Fat:</span>
                         <span class="stat-value">
                           {region.avgFat
-                            ? `${region.avgFat.toFixed(1)}g`
+                            ? `${Math.round(region.avgFat * 10) / 10}g`
                             : "N/A"}
                         </span>
                       </div>
