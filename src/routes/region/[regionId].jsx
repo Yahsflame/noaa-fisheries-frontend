@@ -1,8 +1,18 @@
 import { Title } from "@solidjs/meta";
-import { createSignal, createEffect, For, Show } from "solid-js";
+import {
+  createSignal,
+  createEffect,
+  createMemo,
+  For,
+  Show,
+  onMount,
+} from "solid-js";
 import { useParams } from "@solidjs/router";
 import ApiService from "~/services/api";
-import FishCard from "~/components/FishCard";
+import FishCard from "~/components/FishCard/FishCard";
+import FishCardSkeleton from "~/components/FishCardSkeleton/FishCardSkeleton";
+import { PAGINATION } from "~/constants";
+import "./region.css";
 
 export default function RegionPage() {
   const params = useParams();
@@ -10,6 +20,11 @@ export default function RegionPage() {
   const [fish, setFish] = createSignal([]);
   const [loading, setLoading] = createSignal(true);
   const [error, setError] = createSignal(null);
+  const [visibleCount, setVisibleCount] = createSignal(
+    PAGINATION.INITIAL_VISIBLE_COUNT,
+  );
+  const [loadingMore, setLoadingMore] = createSignal(false);
+  let fishGridRef;
 
   createEffect(async () => {
     const regionId = params.regionId;
@@ -22,7 +37,7 @@ export default function RegionPage() {
       // Fetch region data and fish data
       const [regionInfo, fishData] = await Promise.all([
         ApiService.fetchRegionData(regionId),
-        ApiService.fetchFishByRegion(regionId)
+        ApiService.fetchFishByRegion(regionId),
       ]);
 
       setRegionData(regionInfo);
@@ -33,6 +48,64 @@ export default function RegionPage() {
     } finally {
       setLoading(false);
     }
+  });
+
+  // Create computed values for lazy loading
+  const visibleFish = createMemo(() => {
+    return fish().slice(0, visibleCount());
+  });
+
+  const hasMore = createMemo(() => {
+    return visibleCount() < fish().length;
+  });
+
+  const loadMore = () => {
+    if (loadingMore() || !hasMore()) return;
+
+    setLoadingMore(true);
+    setTimeout(() => {
+      setVisibleCount((prev) =>
+        Math.min(prev + PAGINATION.LOAD_MORE_COUNT, fish().length),
+      );
+      setLoadingMore(false);
+    }, 300);
+  };
+
+  // Setup scroll listener after mount
+  onMount(() => {
+    const handleScroll = () => {
+      if (!hasMore() || loadingMore()) return;
+
+      const container = fishGridRef;
+      if (container) {
+        const lastChild = container.lastElementChild;
+        if (lastChild) {
+          const rect = lastChild.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+
+          if (rect.top <= windowHeight + PAGINATION.SCROLL_THRESHOLD) {
+            loadMore();
+          }
+        }
+      }
+    };
+
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", throttledScroll);
+    };
   });
 
   const formatRegionName = (regionId) => {
@@ -47,7 +120,25 @@ export default function RegionPage() {
       <Title>{regionName()} - NOAA Fisheries</Title>
       <div class="region-page">
         <Show when={loading()}>
-          <div class="loading">Loading region data...</div>
+          <header class="region-header">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-stats">
+              <div class="skeleton-stat-card">
+                <div class="skeleton-stat-label"></div>
+                <div class="skeleton-stat-value"></div>
+              </div>
+              <div class="skeleton-stat-card">
+                <div class="skeleton-stat-label"></div>
+                <div class="skeleton-stat-value"></div>
+              </div>
+            </div>
+          </header>
+          <section class="fish-section">
+            <div class="skeleton-section-title"></div>
+            <div class="skeleton-grid">
+              <For each={Array(6).fill(0)}>{() => <FishCardSkeleton />}</For>
+            </div>
+          </section>
         </Show>
 
         <Show when={error()}>
@@ -83,130 +174,26 @@ export default function RegionPage() {
               when={fish().length > 0}
               fallback={<p>No fish data available for this region.</p>}
             >
-              <div class="fish-grid">
-                <For each={fish()}>
-                  {(fishItem, index) => <FishCard fish={fishItem} />}
+              <div class="fish-grid" ref={fishGridRef}>
+                <For each={visibleFish()}>
+                  {(fishItem) => <FishCard fish={fishItem} />}
                 </For>
               </div>
+
+              <Show when={loadingMore()}>
+                <div class="skeleton-grid">
+                  <For each={Array(PAGINATION.LOAD_MORE_COUNT).fill(0)}>
+                    {() => <FishCardSkeleton />}
+                  </For>
+                </div>
+              </Show>
+
+              <Show when={!hasMore() && visibleFish().length > 0}>
+                <div class="end-message">All fish loaded for this region</div>
+              </Show>
             </Show>
           </section>
         </Show>
-
-        <style jsx>{`
-          .region-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-          }
-
-          .region-header {
-            text-align: center;
-            margin-bottom: 3rem;
-          }
-
-          .region-header h1 {
-            font-size: 2.5rem;
-            color: #1976d2;
-            margin-bottom: 2rem;
-          }
-
-          .region-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-          }
-
-          .stat-card h3 {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-            font-weight: normal;
-          }
-
-          .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #1976d2;
-          }
-
-          .fish-section {
-            margin-top: 3rem;
-          }
-
-          .fish-section h2 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 1.5rem;
-            text-align: center;
-          }
-
-          .fish-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-          }
-
-          @media (max-width: 768px) {
-            .region-page {
-              padding: 1rem;
-            }
-
-            .region-header h1 {
-              font-size: 2rem;
-            }
-
-            .region-stats {
-              grid-template-columns: 1fr;
-              gap: 1rem;
-            }
-
-            .stat-card {
-              padding: 1rem;
-            }
-
-            .stat-card .stat-value {
-              font-size: 1.5rem;
-            }
-
-            .fish-grid {
-              grid-template-columns: 1fr;
-              gap: 1rem;
-            }
-          }
-
-          @media (max-width: 480px) {
-            .region-header h1 {
-              font-size: 1.5rem;
-            }
-
-            .fish-section h2 {
-              font-size: 1.5rem;
-            }
-
-            .stat-card {
-              padding: 1rem;
-            }
-
-            .stat-card h3 {
-              font-size: 0.9rem;
-            }
-
-            .stat-card .stat-value {
-              font-size: 1.3rem;
-            }
-          }
-        `}</style>
       </div>
     </>
   );

@@ -1,0 +1,37 @@
+.fish-name-container {
+  margin-bottom: 1rem;
+}
+
+.fish-name {
+  font-size: 1.3rem;
+  color: #1976d2;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.scientific-name {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .fish-name {
+    font-size: 1.2rem;
+  }
+
+  .scientific-name {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .fish-name {
+    font-size: 1.1rem;
+  }
+
+  .scientific-name {
+    font-size: 0.75rem;
+  }
+}

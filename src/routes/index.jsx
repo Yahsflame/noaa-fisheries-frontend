@@ -210,6 +210,35 @@ export default function Home() {
               padding: 1rem;
             }
           }
+
+          .loading-more {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: #1976d2;
+            font-style: italic;
+          }
+
+          .end-message {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1rem;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+          }
+
+          @media (max-width: 480px) {
+            .loading-more {
+              padding: 1.5rem;
+              font-size: 1rem;
+            }
+
+            .end-message {
+              padding: 1.5rem;
+              font-size: 0.9rem;
+            }
+          }
         `}</style>
       </div>
     </>
